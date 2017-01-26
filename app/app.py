@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_wtf import Form
 from wtforms import TextField, PasswordField, validators, HiddenField
-from wtforms import TextAreaField, BooleanField
+from wtforms import TextAreaField, BooleanField, SelectField
 from wtforms.validators import Required, EqualTo, Optional
 from wtforms.validators import Length, Email
 from wtforms.widgets import TextArea
@@ -22,6 +22,14 @@ class newEntryForm(Form):
     firstName = TextField('Enter first Name:', validators=[Required()])
     lastName = TextField('Enter last Name:', validators=[Required()])
     body = TextField(u'Text', widget=TextArea(), validators=[Required()])
+    item = SelectField('Select Item:',
+                            [validators.Required()],
+                            choices=[
+                                (1, 'VGA Adapter'),
+                                (2, 'Apple Superdrive'),
+                                (3, 'T430'),
+                                (4, 'Other'),
+                            ])
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
