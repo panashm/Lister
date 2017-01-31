@@ -4,7 +4,10 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(64), index=True, unique=False)
     last_name = db.Column(db.String(64), index=True, unique=True)
-    body = db.Column(db.String(140))
+    item = db.Column(db.String(140))
+    duration = db.Column(db.Integer, index=True)
+    dueDate = db.Column(db.DateTime)
+    days_remaining = db.column(db.Integer)
 
     def __repr__(self):
         return '<Entry %r>' % (self.first_name)
