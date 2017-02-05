@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>Python Flask Lister App</title>
+    <title>Flask Lister App</title>
  
     <!--<tite>TEST BOOTSTRAP TEMPLATE</tite>-->
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap3/css/bootstrap.min.css') }}">
@@ -32,20 +32,28 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Lister</a>
+      <a class="navbar-brand" href="{{ url_for('main') }}">Lister</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Search Loans</a></li>
-        <li><a href="#">About</a></li>
+        <li class="active"><a href="{{ url_for('main') }}">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="{{ url_for('search_entry') }}">Search Loans</a></li>
+        <!--<li><a href="{{ url_for('about') }}">About</a></li>-->
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 	{% block content %} {% endblock %}
+    <div class="container-fluid">
+        <br/>
+        <hr style="background-color:#cccccc"/>
+        <br/>
+        <p class="bottomText"> Built with Flask, Bootstrap and SQLAlchemy</p>
+        <p class="bottomText"> By Panashe Mutema</p>
+    </div>
+
 </body>
  
 </html>

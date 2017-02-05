@@ -1,4 +1,5 @@
 from app import db
+import datetime, time
 
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,6 +8,7 @@ class Entry(db.Model):
     item = db.Column(db.String(140))
     duration = db.Column(db.Integer, index=True)
     dueDate = db.Column(db.DateTime)
+    create_date = db.Column(db.DateTime)
     days_remaining = db.column(db.Integer)
 
     def __repr__(self):
@@ -16,3 +18,9 @@ class Entry(db.Model):
      #   self.first_name=first_name
     #  self.last_name = last_name
        # self.body = body
+        
+    def getPrintableDueDate(self):
+        return self.dueDate.strftime('%d/%m/%Y')
+    
+    def getPrintableCreateDate(self):
+        return self.create_date.strftime('%d/%m/%Y')
