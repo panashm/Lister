@@ -4,20 +4,23 @@
         <div class="row new entry">
             <div class="col-xs-11">
                 <h4 class="text-muted">New Loan</h4>
-                <form data-toggle="validator" action="" method="post" name="newEntry">
+                <hr style="height:10pt; visibility:hidden;" />
+                <form class="form-horizontal" id="newEntryForm" data-toggle="validator" action="" method="post" name="newEntry">
 					{{ form.hidden_tag() }}
                     <div class="form-group has-danger">
-                        {{form.firstName.label}}
-						{{form.firstName(placeholder="E.g. Damir", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
-                    	<small id="emailHelp" class="form-text text-muted">We'll never share this lol with anyone else.</small>
+                        <div class="col-xs-12">
+						{{form.firstName(placeholder="First Name", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
+                        </div>
                   	</div>
                     <div class="form-group">
-                    	{{form.lastName.label}}
-						{{form.lastName(placeholder="E.g. Vitaz", class="form-control", required="true")}}
+                        <div class="col-xs-12">
+						{{form.lastName(placeholder="Last Name", class="form-control", required="true")}}
+                        </div>
                   </div>
                   <div class="form-group">
-                        {{form.item.label}}
+                      <div class="col-xs-12">
                         {{form.item(class="form-control", id="item", onchange="change(this)")}}
+                      </div>
                   </div>
                     <!--<div class="form-group">
                         <label for="example-datetime-local-input" class="example-text-imput">Return Date</label>
@@ -25,41 +28,45 @@
 
                         </div>-->
                   <div class="form-group OtherItem">
-                    <label for="exampleTextarea">Other Item:</label>
-                    {{ form.body(placeholder="E.g. Apple Superdrive", class="form-control") }}
+                    <div class="col-xs-12">
+                        {{ form.body(placeholder="E.g. Apple Superdrive", class="form-control") }}
+                    </div>
                     </div>
                     <div class="form-group">
-                        {{form.duration.label}}
-                        {{form.duration(class="form-control daysSelect", id="duration")}}
+                        <div class="col-xs-3">
+                            {{form.duration(class="form-control daysSelect", id="duration")}}
+                        </div>
+                        <p class="daysLabel">Day(s)</p>
                   </div>
                   <button type="submit" name="btn" value="Submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
         <br/>
+        {% if entries %}
         <hr/>
         <br/>
         <div class="row entries">
             <div class="col-xs-12">
                 <h4 class="text-muted">Current Loans</h4>
-                
+                <hr style="height:10pt; visibility:hidden;" />
                 {% for entry in entries %}
-                <div class="table-responsive">
-                    <table class='clickable-row table' data-href="{{ url_for('view_entry', entry_id = entry.id) }}">
+                <div class="">
+                    <table border="0"  bgcolor="#00FF00" class='table table-borderless clickable-row' data-href="{{ url_for('view_entry', entry_id = entry.id) }}">
                         <tr>
-                            {% if (entry.days_remaining > 2) %}
-                                <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></th>
+                            {% if entry.days_remaining > 2 %}
+                                <td style="background-color:#00C853 ;width: 7px; padding:0;" rowspan="2"></th>
                             {% elif (entry.days_remaining > 0) %}
-                                <td style="background-color:#ffb31c;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#FF9800;width: 7px; padding:0;" rowspan="2"></th>
                             {% else %}
-                                <td style="background-color:#f44e42;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#F44336;width: 7px; padding:0;" rowspan="2"></th>
                             {% endif %}
-                            <th class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ entry.id }}</span></th>
+                            <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ entry.id }}</span></td>
                             <td class="tableClient"><b>Client:</b> {{ entry.first_name }} {{ entry.last_name }}</td>
-                            <th class="tableBin" style="width: 50px; padding:7px;" rowspan="2">
-                                <form action="{{ url_for('delete_entry') }}" method="POST" class="deleteEntry">
+                            <th class="tableBin notThis" style="width: 50px; padding:7px;" rowspan="2">
+                                <form action="{{ url_for('delete_entry') }}" class="deleteForm" id="delete" method="POST" class="deleteEntry">
                                     <input type=hidden value="{{ entry.id }}"name="entry_to_delete">
-                                    <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                    <button type="submit" name="delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                                 </form>
                             </th>
                             
@@ -72,7 +79,7 @@
                                     5
                                 {% endif %}
                             </td>
-                            <td class="tableItem"><b>Item:</b> {{entry.item}} </td>
+                            <td class="tableItem"><b>Item:</b> <span style="margin-left: 0.6em;"> {{entry.item}} </span></td>
                         </tr>
                 </a>
                     </table>
@@ -80,9 +87,41 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 
-    <script>    
+    <script> 
+        $('.deleteForm').click(function(e) {
+            var currentForm = this;
+            e.preventDefault();
+            bootbox.confirm({ 
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    }
+                },
+                message: "Are you sure?", 
+                
+                callback: function(result){ 
+                    if (result == true) {
+                        currentForm.submit();
+                    }
+                }
+            })
+        });
+        
+        $('#form').submit(function () {
+            //do your validation or whatever you need to do before submit
+        });
+        
+        //$("#newEntryForm")[0].reset();
+        
         var textBlock = $('.OtherItem');
         textBlock.hide();
         
@@ -99,10 +138,11 @@
         }
         
         jQuery(document).ready(function($) {
-            $(".clickable-row").click(function() {
-                window.document.location = $(this).data("href");
+            $(".clickable-row td").click(function() {
+                window.document.location = $(this).closest(".clickable-row").data("href");
             });
         });
+        
     </script>
 
 {% endblock %}

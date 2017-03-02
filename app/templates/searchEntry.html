@@ -6,27 +6,92 @@
                 <h4 class="text-muted">Search Loans</h4>
                 <form data-toggle="validator" action="" method="post" name="newSearch">
 					{{ form.hidden_tag() }}
-                    <div class="form-group has-danger">
-                        {{form.searchField.label}}
-						{{form.searchField(placeholder="VGA", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
-                  	</div>
                   <div class="form-group">
-                        {{form.category.label}}
-                        {{form.category(class="form-control", id="category", onchange="change(this)")}}
+                        {{form.category(class="form-control", id="category")}}
                     </div>
+                    <div class="form-group has-danger">
+						{{form.searchField(placeholder="Search Term", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
+                  	</div>
     
                   <button type="submit" name="btn" value="Submit" class="btn btn-primary">Search</button>
                 </form>
             </div>
         </div>
         <br/>
+        {% if results %}
         <hr/>
         <br/>
         <h4 class="text-muted">Results</h4>
         <div class="row entries">
             <div class="col-xs-12">
+                {% for r in results %}
+                <div class="">
+                    <table border="0" bgcolor="#00FF00" class='clickable-row table-borderless table' data-href="{{ url_for('view_entry', entry_id = r.id, page=request.endpoint) }}">
+                        <tr>
+                            {% if r.days_remaining > 2 %}
+                                <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></th>
+                            {% elif r.days_remaining > 0 %}
+                                <td style="background-color:#ffb31c;width: 7px; padding:0;" rowspan="2"></th>
+                            {% else %}
+                                <td style="background-color:#f44e42;width: 7px; padding:0;" rowspan="2"></th>
+                            {% endif %}
+                            <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ r.id }}</span></td>
+                            <td class="tableClient"><b>Client:</b> {{ r.first_name }} {{ r.last_name }}</td>
+                            <th class="tableBin" style="width: 50px; padding:7px;" rowspan="2">
+                                <form action="{{ url_for('delete_entry') }}" class="deleteForm" method="POST" class="deleteEntry">
+                                    <input type=hidden value="{{ r.id }}"name="entry_to_delete">
+                                    <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                </form>
+                            </th>
+                            
+                        </tr>
+                        <tr>
+                            <td class="tableTime"><span class="glyphicon glyphicon-time"></span> 
+                                {{ r.days_remaining }}
+                            </td>
+                            <td class="tableItem"><b>Item:</b> {{r.item}} </td>
+                        </tr>
+                </a>
+                    </table>
+                </div>
+                {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
+    <script>
+        
+        $('.deleteForm').click(function(e) {
+            var currentForm = this;
+            e.preventDefault();
+            bootbox.confirm({ 
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    }
+                },
+                message: "Are you sure?", 
+                
+                callback: function(result){ 
+                    if (result == true) {
+                        currentForm.submit();
+                    }
+                }
+            })
+        });
+        
+        
+        jQuery(document).ready(function($) {
+            $(".clickable-row td").click(function() {
+                window.document.location = $(this).closest(".clickable-row").data("href");
+            });
+        });
+    </script>
 
 {% endblock %}

@@ -4,9 +4,76 @@ body {
      background-size: 440px 400px;
      background-repeat:no-repeat;
      background-position: top;
-     font-family: "sans-serif"
+     font-family: 'Roboto', sans-serif;
      padding: 30;
     display: compact;
+}
+
+.daysLabel {
+    margin-top:5px;
+    margin-right:5px;
+    margin-left:10px;
+    margin-bottom:5px;
+    display:inline-block;
+}
+
+.entryLabel {
+    font-size: 30
+}
+
+.labelUsername {
+    margin-top:5px;
+    margin-bottom:5px;
+    display: inline;
+    vertical-align:bottom;
+    text-align: left;
+}
+
+.text-muted {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 30
+}
+
+h1, h2, h3, p, h4, blockquote, q, .maia-nav ul {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+
+
+.tableGreenIndicator {
+    background-color:#00C853 ;
+    width: 5px; 
+    table-layout:fixed;
+    padding:0;
+}
+
+table {
+    border: none;
+    background-color:#EEEEEE;
+}
+
+b {
+    font-weight:500;
+}
+
+.table-borderless tbody tr td,
+.table-borderless tbody tr th,
+.table-borderless thead tr th,
+.table-borderless thead tr td,
+.table-borderless tfoot tr th,
+.table-borderless tfoot tr td {
+    border: none;
+}
+
+.borderless td, .borderless th {
+    border: none;
+}
+
+.Absolute-Center {
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
 }
 
 hr {
@@ -17,23 +84,48 @@ hr {
     background-color: #4db8ff; /* Modern Browsers */
 }
 
+.daysSelect {
+     width:70px;
+}
+
+.bottomText {
+    font-size: 13px;
+    color: #cccccc; /* old IE */
+    
+}
+
 .glyphicon {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .label-primary {
-    background-color: #4db8ff;
+    background-color: #dbdde0;
 }
 
 .tableBin {
+    text-align: left;  
+    vertical-align: middle !important;
+}
+
+.tableTime {
     text-align: center;  
     vertical-align: middle !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding:0;
+    font-size: 18px;
 }
 
 .tableIndex {
     text-align: center;  
     vertical-align: middle !important;
     font-size: 18px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.label-primary{
+    background-color: #B0BEC5;
 }
 
 .formBack {

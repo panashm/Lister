@@ -1,4 +1,5 @@
-from app import db
+from app import db, bcrypt
+
 import datetime, time
 
 class Entry(db.Model):
@@ -9,7 +10,8 @@ class Entry(db.Model):
     duration = db.Column(db.Integer, index=True)
     dueDate = db.Column(db.DateTime)
     create_date = db.Column(db.DateTime)
-    days_remaining = db.column(db.Integer)
+    days_remaining = db.Column(db.Integer)
+    tech = db.Column(db.String(64))
 
     def __repr__(self):
         return '<Entry %r>' % (self.first_name)
@@ -24,3 +26,30 @@ class Entry(db.Model):
     
     def getPrintableCreateDate(self):
         return self.create_date.strftime('%d/%m/%Y')
+    
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column('username', db.String(20), unique=True , index=True)
+    password = db.Column('password', db.Binary(60), nullable=False)
+    email = db.Column('email', db.String(50),unique=True , index=True)
+    authenticated = db.Column('authenticated', db.Boolean)
+
+    def set_password(self, password):
+        """Set password."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the id to satisfy Flask-Login's requirements."""
+        return unicode(self.id)
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False

@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row new entry">
             <div class="col-xs-11">
-                <form action="{{ url_for('main') }}" method="GET">
+                <form action="{{ prevPage }}" method="GET">
                     <button type="submit" class="btn btn-default">Back</button>
                 </form>
             </div>
@@ -13,12 +13,15 @@
         <br/>
         <div class="row entries">
             <div class="col-xs-12">
-                <div class="table-responsive">
-                    <table class="table table-hover">
+                <div class="">
+                    <table boder="0" class="table table-borderless table-hover">
+                        <col width="40%">
+                        <col width="60%">
                         <thead>
                             <tr class="table-active">
-                                <th >Entry  </th>
-                                <th><span class="label label-primary">#{{ entry.id }}</span></th>
+                                <th >Entry iD:
+                                </th>
+                                <th><span class="label label-primary entryLabel">#{{ entry.id }}</span></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,11 +47,11 @@
                             </tr>
                             <tr>
                               <th scope="row">Tech:</th>
-                                <td> Pyle Doaree</td>
+                                <td> {{ entry.tech }} </td>
                             </tr>
                             <tr>
                               <th></th>
-                                <td><form action="{{ url_for('delete_entry') }}" method="POST" class="deleteEntry">
+                                <td><form action="{{ url_for('delete_entry') }}" class="deleteForm" method="POST" class="deleteEntry">
                                     <input type=hidden value="{{ entry.id }}"name="entry_to_delete">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
@@ -60,7 +63,32 @@
         </div>
     </div>
 
-    <script>    
+    <script>  
+        $('.deleteForm').click(function(e) {
+            var currentForm = this;
+            e.preventDefault();
+            bootbox.confirm({ 
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    }
+                },
+                message: "Are you sure?", 
+                
+                callback: function(result){ 
+                    if (result == true) {
+                        currentForm.submit();
+                    }
+                }
+            })
+        });
+        
         var textBlock = $('.OtherItem');
         textBlock.hide();
         
