@@ -2,6 +2,13 @@ from app import db, bcrypt
 
 import datetime, time
 
+from config import WHOOSH_ENABLED
+
+enable_search = WHOOSH_ENABLED
+if enable_search:
+    import flask_whooshalchemy as whooshalchemy
+
+
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(64), index=True, unique=False)
