@@ -224,7 +224,8 @@ def login():
         print(user.username)
         print("password is:")
         print(user.password)
-        #user.set_password(user.password)
+        if len(user.password) < 25:
+            user.set_password(user.password)
         
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):

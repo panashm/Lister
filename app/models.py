@@ -35,12 +35,13 @@ class Entry(db.Model):
         return self.create_date.strftime('%d/%m/%Y')
     
 class User(db.Model):
+    __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)
     password = db.Column('password', db.LargeBinary(60), nullable=False)
     email = db.Column('email', db.String(50),unique=True , index=True)
     authenticated = db.Column('authenticated', db.Boolean)
-
+    
     def set_password(self, password):
         """Set password."""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
