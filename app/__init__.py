@@ -1,5 +1,7 @@
 from __future__ import print_function # In python 2.7
 import sys
+import logging
+
 from flask import (Flask, flash, render_template, request, redirect, url_for)
 from flask_sqlalchemy import SQLAlchemy
 import datetime, time
