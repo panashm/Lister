@@ -12,7 +12,7 @@ if enable_search:
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(64), index=True, unique=False)
-    last_name = db.Column(db.String(64), index=True, unique=True)
+    last_name = db.Column(db.String(64), index=True, unique=False)
     item = db.Column(db.String(140))
     duration = db.Column(db.Integer, index=True)
     dueDate = db.Column(db.DateTime)
@@ -33,6 +33,15 @@ class Entry(db.Model):
     
     def getPrintableCreateDate(self):
         return self.create_date.strftime('%d/%m/%Y')
+
+class Log(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(64), index=True, unique=False)
+    last_name = db.Column(db.String(64), index=True, unique=False)
+    item = db.Column(db.String(140))
+    action = db.Column(db.String(140))
+    tech = db.Column(db.String(64))
+    date = db.Column(db.DateTime)
     
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

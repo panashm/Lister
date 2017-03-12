@@ -12,7 +12,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt
 from .forms import searchForm, newEntryForm, item_choices, day_choices, search_choices, loginForm
-from .models import Entry, User
+from .models import Entry, User, Log
 
 class MyView(BaseView):
     @expose('/')
@@ -163,6 +163,11 @@ def sendEmail( entry ):
 @app.route('/delete', methods=['POST'])
 def delete_entry():
     if request.method == 'POST':
+        entry = Entry.query.get(request.form['entry_to_delete'])
+        print("we are printing", file=sys.stderr)
+        print(entry.first_name, file=sys.stderr)
+        #log = Log(first_name=entry.first_name, last_name=entry.last_name, item = entry.item, action = "deleted", tech = entry.tech, date = time.strftime("%d/%m/%Y")) 
+        #db.session.add(log)
         Entry.query.filter_by(id=request.form['entry_to_delete']).delete()
         db.session.commit()
         
@@ -245,6 +250,11 @@ def login():
     next = request.args.get('next')
     print ("got hereeee")
     return render_template("login.html", form=form, next=next)
+
+@app.route("/history", methods=["GET"])
+def history():
+
+    return render_template("history.html", logs = Log.query.all())
 
 @app.route("/logout", methods=["GET"])
 def logout():
