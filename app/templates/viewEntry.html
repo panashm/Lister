@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row new entry">
+            <div class="col-xs-11">
+                <form action="{{ prevPage }}" method="GET">
+                    <button type="submit" class="btn btn-default">Back</button>
+                </form>
+            </div>
+        </div>
+        <br/>
+        <hr/>
+        <br/>
+        <div class="row entries">
+            <div class="col-xs-12">
+                <div class="">
+                    <table boder="0" class="table table-borderless table-hover">
+                        <col width="40%">
+                        <col width="60%">
+                        <thead>
+                            <tr class="table-active">
+                                <th >Entry iD:
+                                </th>
+                                <th><span class="label label-primary entryLabel">#{{ entry.id }}</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Client: </th>
+                                <th>{{entry.first_name}} {{entry.last_name}}</th>
+                            </tr>
+                            <tr>
+                              <th scope="row">Item:</th>
+                              <td>{{ entry.item }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Status:</th>
+                              <td>On Loan</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Date Created:</th>
+                              <td>{{ entry.getPrintableCreateDate() }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Date Due:</th>
+                                <td>{{ entry.getPrintableDueDate() }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Tech:</th>
+                                <td> {{ entry.tech }} </td>
+                            </tr>
+                            <tr>
+                              <th></th>
+                                <td><form action="{{ url_for('delete_entry') }}" class="deleteForm" method="POST" class="deleteEntry">
+                                    <input type=hidden value="{{ entry.id }}"name="entry_to_delete">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>  
+        $('.deleteForm').click(function(e) {
+            var currentForm = this;
+            e.preventDefault();
+            bootbox.confirm({ 
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    }
+                },
+                message: "Are you sure?", 
+                
+                callback: function(result){ 
+                    if (result == true) {
+                        currentForm.submit();
+                    }
+                }
+            })
+        });
+        
+        var textBlock = $('.OtherItem');
+        textBlock.hide();
+        
+        function change(obj) {
+            var textBlock = $('.OtherItem');
+            var selectBox = document.getElementById("item");
+            var selected = selectBox.value;
+            
+            if (selected == '3'){
+               textBlock.show();
+            }else{
+                textBlock.hide();
+            }
+        }
+    </script>
+
+{% endblock %}
