@@ -45,7 +45,7 @@ class Log(db.Model):
     
     def getPrintableDueDate(self):
         return self.date.strftime('%d/%m/%y')
-    
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)

@@ -40,7 +40,7 @@
                             
                             <p class="daysLabel">Day(s)</p>
                         </div>
-                        
+
                   </div>
                   <button type="submit" name="btn" value="Submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -59,11 +59,11 @@
                     <table border="0"  bgcolor="#00FF00" class='table table-borderless clickable-row' data-href="{{ url_for('view_entry', entry_id = entry.id) }}">
                         <tr>
                             {% if entry.days_remaining > 2 %}
-                                <td style="background-color:#00C853 ;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#00C853 ;width: 7px; padding:0;" rowspan="2"></td>
                             {% elif (entry.days_remaining > 0) %}
-                                <td style="background-color:#FF9800;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#FF9800;width: 7px; padding:0;" rowspan="2"></td>
                             {% else %}
-                                <td style="background-color:#F44336;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#F44336;width: 7px; padding:0;" rowspan="2"></td>
                             {% endif %}
                             <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ entry.id }}</span></td>
                             <td class="tableClient"><b>Client:</b> {{ entry.first_name }} {{ entry.last_name }}</td>
@@ -85,7 +85,6 @@
                             </td>
                             <td class="tableItem"><b>Item:</b> <span style="margin-left: 0.6em;"> {{entry.item}} </span></td>
                         </tr>
-                </a>
                     </table>
                 </div>
                 {% endfor %}
