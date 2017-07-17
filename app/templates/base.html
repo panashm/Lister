@@ -11,6 +11,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap3/css/bootstrap.min.css') }}">
     <!-- Optional Bootstrap theme -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap3/css/custom.css') }}">
@@ -23,7 +24,7 @@
     <link href="{{ url_for('static', filename='css/c3.css') }}" rel="stylesheet" type="text/css">
 </head>
  
-<body>
+<body class="desktopView">
 <nav class="navbar navbar-default" data-spy="" data-offset-top="">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -46,7 +47,7 @@
       <ul class="menuFloat nav navbar-nav navbar-right">
         <li><a href="{{ url_for('main') }}">Home </a></li>
         <li><a href="{{ url_for('search_entry') }}">Search Loans</a></li>
-        <li><a href="{{ url_for('main') }}">Log</a></li>
+        <li><a href="{{ url_for('history') }}">Log</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
@@ -58,15 +59,15 @@
 	{% block content %} {% endblock %}
     </div>
     
-<footer class="footer">
-    <div class="container">
-        <br/>
-        <hr style="background-color:#cccccc"/>
-        <br/>
-        <p class="bottomText"> Powered by Flask, Bootstrap and SQLAlchemy</p>
-        <p class="bottomText"> By Panashe Mutema</p>
-    </div>
-</footer>
+    <footer class="footer">
+        <div class="">
+            <br/>
+            <hr style="background-color:#cccccc"/>
+            <br/>
+            <p class="bottomText"> Powered by Flask, Bootstrap and SQLAlchemy</p>
+            <p class="bottomText"> By Panashe Mutema</p>
+        </div>
+    </footer>
 
 </body>
  

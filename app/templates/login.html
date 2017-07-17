@@ -1,46 +1,44 @@
 <html lang="en">
- 
-<head>
-    <title>Lister App</title>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <!--<tite>TEST BOOTSTRAP TEMPLATE</tite>-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap3/css/bootstrap.min.css') }}">
-    <!-- Optional Bootstrap theme -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap3/css/custom.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="{{ url_for('static', filename='css/bootstrap3/js/jquery-3.1.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='css/bootstrap3/js/bootstrap.min.js') }}"></script>
-    <!-- Load c3.css -->
-    <link href="{{ url_for('static', filename='css/c3.css') }}" rel="stylesheet" type="text/css">
-    <!-- Load d3.js and c3.js -->
-    <script src="{{ url_for('static', filename='js/d3.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/c3.js') }}"></script>
-</head>
-<body>
+    <head>
+        <title>Lister App</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <!--<tite>TEST BOOTSTRAP TEMPLATE</tite>-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap3/css/bootstrap.min.css') }}">
+        <!-- Optional Bootstrap theme -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap3/css/custom.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="{{ url_for('static', filename='css/bootstrap3/js/jquery-3.1.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='css/bootstrap3/js/bootstrap.min.js') }}"></script>
+        <!-- Load c3.css -->
+        <link href="{{ url_for('static', filename='css/c3.css') }}" rel="stylesheet" type="text/css">
+        <!-- Load d3.js and c3.js -->
+        <script src="{{ url_for('static', filename='js/d3.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/c3.js') }}"></script>
+    </head>
+    <body class="login">
         <div class="container-fluid">
-        <div class="col-xs-12">
-          <form class="form-signin" method="POST" action="" style="text-align: center;">
-            {{ form.csrf_token }}
-            <br/>
-              <br/>
-              <br/>
-              <br/>
-              <h3 class="form-signin-heading text-muted">Lister Login</h3><br>
-            <label for="inputEmail" class="sr-only">Email address</label>
-            <input type="text" id="inputEmail" name = "username" class="form-control" placeholder="Username" required autofocus>
-                  <!--<input type=hidden value="{{ next or '' }}" name=next>-->
-              <input type=hidden value="{{ next or '' }}" name=next>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <br><input type="password" name="password"  id="inputPassword" class="form-control" placeholder="Password" required>
-            <br><button class="btn btn-lg btn-primary btn-block" name="login" value="Login" type="submit">Sign in</button><br/>
-            <button class="btn btn-lg btn-primary btn-block" name="createAccount">Create Account</button><br/>
-            <button class="btn btn-lg btn-primary btn-block" name="forgotPassword">Forgot Password</button>
-            </form>
+            <div class="col-xs-12">
+                <form class="form-signin" method="POST" action="" style="text-align: center;">
+                    {{ form.csrf_token }}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <h3 class="form-signin-heading text-muted">Lister Login</h3><br>
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="text" id="inputEmail" name = "username" class="form-control" placeholder="Username" required autofocus>
+                          <!--<input type=hidden value="{{ next or '' }}" name=next>-->
+                    <input type=hidden value="{{ next or '' }}" name=next>
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <br><input type="password" name="password"  id="inputPassword" class="form-control" placeholder="Password" required>
+                    <br><button class="btn btn-lg btn-primary btn-block" name="login" value="Login" type="submit">Sign in</button><br/>
+                    <button class="btn btn-lg btn-primary btn-block" name="createAccount">Create Account</button><br/>
+                    <button class="btn btn-lg btn-primary btn-block" name="forgotPassword">Forgot Password</button>
+                </form>
+            </div>
         </div>
-    </div>
-
-</body>
+    </body>
 </html>

@@ -21,6 +21,7 @@ class MyView(BaseView):
         
 admin.add_view(MyView(name='Hello'))
 admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Log, db.session))
 
 currDate = time.strftime("%d/%m/%Y")
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
@@ -166,8 +167,8 @@ def delete_entry():
         entry = Entry.query.get(request.form['entry_to_delete'])
         print("we are printing", file=sys.stderr)
         print(entry.first_name, file=sys.stderr)
-        #log = Log(first_name=entry.first_name, last_name=entry.last_name, item = entry.item, action = "deleted", tech = entry.tech, date = time.strftime("%d/%m/%Y")) 
-        #db.session.add(log)
+        log = Log(first_name=entry.first_name, last_name=entry.last_name, item = entry.item, action = "Complete", tech = entry.tech, date = datetime.strptime(currDate, '%d/%m/%Y')) 
+        db.session.add(log)
         Entry.query.filter_by(id=request.form['entry_to_delete']).delete()
         db.session.commit()
         

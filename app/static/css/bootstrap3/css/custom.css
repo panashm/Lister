@@ -1,12 +1,22 @@
 * {
     margin: 0;
 }
-html, body {
+
+.login{
     height: 100%;
-    max-width: 900px;
+    max-width: 500px;
+    margin: 0 auto !important;
+    float: none !important;
+    text-align: center;
+}
+
+.desktopView, .footer {
+    height: 100%;
+    max-width: 700px;
     margin: 0 auto !important;
     float: none !important;
 }
+
 
 .wrapper {
     min-height: 100%;
@@ -17,6 +27,8 @@ html, body {
 .footer, .push {
     height: 20px; /* .push must be the same height as .footer */
     bottom: 0;
+    max-width: 700px;
+    padding: 15px;
 }
 
 body {
@@ -30,6 +42,7 @@ body {
     width: 100%;
     z-index: 9999 !important;
 }
+
 .navbar {
     margin-bottom: 0px;
 }
@@ -44,10 +57,10 @@ body {
 }
 
 .daysLabel {
-    margin-top:5px;
-    margin-right:5px;
-    margin-left:10px;
-    margin-bottom:5px;
+    padding-top:5px;
+    padding-right:5px;
+    padding-left:5px;
+    padding-bottom:5px;
     display:inline-block;
 }
 
