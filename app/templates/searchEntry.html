@@ -29,11 +29,11 @@
                     <table border="0" bgcolor="#00FF00" class='clickable-row table-borderless table' data-href="{{ url_for('view_entry', entry_id = r.id, page=request.endpoint) }}">
                         <tr>
                             {% if r.days_remaining > 2 %}
-                                <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></td>
                             {% elif r.days_remaining > 0 %}
-                                <td style="background-color:#ffb31c;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#ffb31c;width: 7px; padding:0;" rowspan="2"></td>
                             {% else %}
-                                <td style="background-color:#f44e42;width: 7px; padding:0;" rowspan="2"></th>
+                                <td style="background-color:#f44e42;width: 7px; padding:0;" rowspan="2"></td>
                             {% endif %}
                             <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ r.id }}</span></td>
                             <td class="tableClient"><b>Client:</b> {{ r.first_name }} {{ r.last_name }}</td>
@@ -51,7 +51,6 @@
                             </td>
                             <td class="tableItem"><b>Item:</b> {{r.item}} </td>
                         </tr>
-                </a>
                     </table>
                 </div>
                 {% endfor %}

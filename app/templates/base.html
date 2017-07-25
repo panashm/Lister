@@ -25,10 +25,10 @@
     <link href="{{ url_for('static', filename='css/c3.css') }}" rel="stylesheet" type="text/css">
 </head>
  
-<body class="desktopView">
+<body class="">
 
-<nav class="navbar navbar-default" data-spy="" data-offset-top="">
-  <div class="container-fluid">
+<nav class="navbar navbar-default navbar-fixed-top" data-spy="" data-offset-top="">
+  <div class="container-fluid desktopView">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -57,21 +57,20 @@
   </div><!-- /.container-fluid -->
 </nav>
     <br/>
-    <div class="wrapper">
+    <div class="desktopView">
+        <div class=" wrapper">
 
-	{% block content %} {% endblock %}
+	   {% block content %} {% endblock %}
+        </div>
     </div>
     
-    <footer class="footer">
-        <div class="">
+        <div class="footer">
             <br/>
             <hr style="background-color:#cccccc"/>
             <br/>
             <p class="bottomText"> Powered by Flask, Bootstrap and SQLAlchemy</p>
-            <p class="bottomText"> By Panashe Mutema</p>
+            <p class="bottomText"> By Panashe Mutema &copy; 2017</p>
         </div>
-    </footer>
-
 
 </body>
  
