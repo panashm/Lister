@@ -17,14 +17,44 @@ from .models import Entry, User, Log
 class MyView(BaseView):
     @expose('/')
     def index(self):
+        
         return self.render('AdminIndex.html')
         
 admin.add_view(MyView(name='Hello'))
 admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Entry, db.session))
 admin.add_view(ModelView(Log, db.session))
 
 currDate = time.strftime("%d/%m/%Y")
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
+
+def update_loans():
+    entries = Entry.query.all()
+    if entries:
+        d1 = datetime.strptime(currDate, '%d/%m/%Y')
+        for entry in entries:
+
+            if (entry.dueDate != None):
+                dueDate = (entry.dueDate)
+                dueDate = dueDate.strftime('%d/%m/%Y')
+                #currDate = time.strftime(dueDate, "%d/%m/%Y")
+                print (dueDate, file=sys.stderr)
+                d2 = datetime.strptime(dueDate, '%d/%m/%Y')
+                daysRemaining = ((d2 - d1).days)
+                print ("yah yah yah yah yah",file=sys.stderr)
+                print(daysRemaining, file=sys.stderr)
+                print(entry.first_name, file=sys.stderr)
+
+                if daysRemaining >= 0: 
+                    entry.days_remaining = int(daysRemaining)
+                else:
+                    daysRemaining = 0
+                    entry.days_remaining = int(daysRemaining)
+
+                #if entry.days_remaining == 0:
+                    #sendEmail(entry)
+
+                db.session.commit()
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -81,8 +111,8 @@ def main():
             integer = int(form.item.data)
             item_display = item_choices[integer][1]
 
-            day_integer = int(form.duration.data)
-            day_display = int(day_choices[day_integer][1])
+            day_integer = int(form.duration.data) + 1
+            day_display = int(day_choices[day_integer][1]) - 1
             
             currrDate = datetime.strptime(currDate, '%d/%m/%Y')
             due_date = datetime.strptime(currDate, '%d/%m/%Y') + timedelta(days=day_integer)
@@ -90,6 +120,7 @@ def main():
             #if form.validate():
             print(day_display, file=sys.stderr)
             print("hello there", file=sys.stderr)
+            print("the date is:", day_integer, due_date, file=sys.stderr)
 
             if (item_display == "Other"):
                 entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, item = form.body.data, duration = day_display, dueDate = due_date, 
@@ -109,32 +140,7 @@ def main():
             return render_template('viewEntry.html', user = g.user, entries = Entry.query.all())
     else:
         #Calculate the days remaining
-        entries = Entry.query.all()
-        if entries:
-            d1 = datetime.strptime(currDate, '%d/%m/%Y')
-            for entry in entries:
-
-                if (entry.dueDate != None):
-                    dueDate = (entry.dueDate)
-                    dueDate = dueDate.strftime('%d/%m/%Y')
-                    #currDate = time.strftime(dueDate, "%d/%m/%Y")
-                    print (dueDate, file=sys.stderr)
-                    d2 = datetime.strptime(dueDate, '%d/%m/%Y')
-                    daysRemaining = ((d2 - d1).days)
-                    print ("yah yah yah yah yah",file=sys.stderr)
-                    print(daysRemaining, file=sys.stderr)
-                    print(entry.first_name, file=sys.stderr)
-
-                    if daysRemaining >= 0: 
-                        entry.days_remaining = int(daysRemaining)
-                    else:
-                        daysRemaining = 0
-                        entry.days_remaining = int(daysRemaining)
-                    
-                    #if entry.days_remaining == 0:
-                        #sendEmail(entry)
-                    
-                    db.session.commit()
+        #update_loans()
                 
     
         return render_template('index.html', user = g.user, form = newEntryForm(), entries = Entry.query.all())
@@ -198,7 +204,7 @@ def search_entry():
         if search_cat == "iD":
             results = Entry.query.filter_by(id=form1.searchField.data).all()
         elif search_cat == "Client":
-            results = Entry.query.filter(Entry.first_name.contains(form1.searchField.data)).all()
+            results = Entry.query.filter((Entry.first_name.contains(form1.searchField.data)) | (Entry.last_name.contains(form1.searchField.data))).all()
         elif search_cat == "Item":
             results = Entry.query.filter(Entry.item.contains(form1.searchField.data)).all()
         elif search_cat == "Tech":
