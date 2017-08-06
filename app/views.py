@@ -112,7 +112,7 @@ def main():
             item_display = item_choices[integer][1]
 
             day_integer = int(form.duration.data) + 1
-            day_display = int(day_choices[day_integer][1]) - 1
+            day_display = int(day_choices[day_integer - 1][1])
             
             currrDate = datetime.strptime(currDate, '%d/%m/%Y')
             due_date = datetime.strptime(currDate, '%d/%m/%Y') + timedelta(days=day_integer)
