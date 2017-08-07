@@ -8,11 +8,36 @@
     padding-right: 1px;
 }
 
+.titleLister {
+    font-family: 'Righteous', cursive !important;
+
+    color: #a6a6a6 !important;
+}
+
+.form-signin {
+    padding: 0;
+}
+
+.center {
+    position:absolute; /*it can be fixed too*/
+    left:0; right:0;
+    top:0; bottom:0;
+    margin:auto;
+
+    /*this to solve "the content will not be cut when the window is smaller than the content": */
+    max-width:330px;
+    max-height:450px;
+    overflow:auto;
+    border-radius: 20px;
+    border: 0px solid #eeeeee;
+    padding: 30px;
+ }
+
 .login{
     height: 100%;
     max-width: 500px;
     margin: 0 auto !important;
-    float: none !important;
+    vertical-align: middle;
     text-align: center;
 }
 
@@ -50,14 +75,18 @@ body {
 }
 
 .navbar {
+    -webkit-box-shadow: 0 6px 6px -6px #999;
+    -moz-box-shadow: 0 6px 6px -6px #999;
+    box-shadow: 0 6px 6px -6px #999;
     /*margin-bottom: 0px;*/
-    background-color: #EEEEEE;
+    background-color:  rgb(250, 250, 250);
     /*position: fixed; /* Set the navbar to fixed position */
     /*top: 0; /* Position the navbar at the top of the page */
     /*width: 100%; /* Full width */
 }
 
-.navbar a{
+.navbar a:hover{
+    color: #00ace6 !important;
     /*display: block;
     text-align: center;
     padding: 14px 16px;
@@ -145,7 +174,7 @@ b {
 
 hr {
     border: none;
-    height: 2px;
+    height: 1px;
     /* Set the hr color */
     color: #4db8ff; /* old IE */
     background-color: #4db8ff; /* Modern Browsers */
@@ -169,6 +198,9 @@ hr {
     background-color: #dbdde0;
 }
 
+.btn-hidden{
+    color: #a0a5ac !important;
+}
 .tableBin {
     text-align: left;  
     vertical-align: middle !important;

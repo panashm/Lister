@@ -4,7 +4,6 @@ from urlparse import urlparse, urljoin
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
- 
 import sys
 from datetime import date, datetime, time, timedelta
 import time
@@ -27,6 +26,9 @@ admin.add_view(ModelView(Log, db.session))
 
 currDate = time.strftime("%d/%m/%Y")
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
+
+def lower(string):
+    return string.lower()
 
 def update_loans():
     entries = Entry.query.all()
@@ -204,11 +206,11 @@ def search_entry():
         if search_cat == "iD":
             results = Entry.query.filter_by(id=form1.searchField.data).all()
         elif search_cat == "Client":
-            results = Entry.query.filter((Entry.first_name.contains(form1.searchField.data)) | (Entry.last_name.contains(form1.searchField.data))).all()
+            results = Entry.query.filter((Entry.first_name.ilike("%"+ form1.searchField.data +"%")) | (Entry.last_name.ilike("%"+ form1.searchField.data +"%")) ).all()
         elif search_cat == "Item":
-            results = Entry.query.filter(Entry.item.contains(form1.searchField.data)).all()
+            results = Entry.query.filter(Entry.item.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Tech":
-            results = Entry.query.filter(Entry.tech.contains(form1.searchField.data)).all()
+            results = Entry.query.filter(Entry.tech.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Days Remaining":
             results = Entry.query.filter(Entry.days_remaining.contains(form1.searchField.data)).all()
         else:
