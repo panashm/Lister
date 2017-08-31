@@ -5,6 +5,11 @@ import smtplib, re
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 import sys
+from sqlalchemy import cast
+from sqlalchemy.sql.expression import cast
+from sqlalchemy import Column, Integer, Sequence, types, Float, String
+
+import sqlalchemy
 from datetime import date, datetime, time, timedelta
 import pytz
 from flask.ext.mail import Message
@@ -12,7 +17,7 @@ from pytz import timezone
 import time
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
-from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt, mail
+from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt, mail, SQLAlchemy
 from .forms import searchForm, newEntryForm, item_choices, day_choices, search_choices, loginForm, registrationForm
 from .models import Entry, User, Log
 from itsdangerous import URLSafeTimedSerializer
@@ -258,7 +263,7 @@ def search_entry():
         elif search_cat == "Tech":
             results = Entry.query.filter(Entry.tech.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Days Remaining":
-            results = Entry.query.filter(Entry.days_remaining.ilike("%"+ form1.searchField.data +"%")).all()
+            results = Entry.query.filter(cast(Entry.days_remaining, sqlalchemy.String).ilike("%"+ form1.searchField.data +"%")).all()
         else:
             results = []
         
