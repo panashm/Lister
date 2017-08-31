@@ -194,7 +194,7 @@ def sendEmailConfirm(to, subject, template):
     
 def sendEmailEntry():
     
-    results = Entry.query.filter(Entry.days_remaining.contains(0)).all()
+    results = Entry.query.filter(Entry.days_remaining.ilike("%"+ form1.searchField.data +"%")).all()
     
     if results:
         subject = "Service Desk Loans Due"
@@ -258,7 +258,7 @@ def search_entry():
         elif search_cat == "Tech":
             results = Entry.query.filter(Entry.tech.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Days Remaining":
-            results = Entry.query.filter(Entry.days_remaining.contains(form1.searchField.data)).all()
+            results = Entry.query.filter(Entry.days_remaining.ilike("%"+ form1.searchField.data +"%")).all()
         else:
             results = []
         
