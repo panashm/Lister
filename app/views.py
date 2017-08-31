@@ -199,7 +199,7 @@ def sendEmailConfirm(to, subject, template):
     
 def sendEmailEntry():
     
-    results = Entry.query.filter(cast(Entry.days_remaining, sqlalchemy.String).ilike("%"+ form1.searchField.data +"%")).all()
+    results = Entry.query.filter(cast(Entry.days_remaining, sqlalchemy.String).ilike("%"+ 0 +"%")).all()
     
     if results:
         subject = "Service Desk Loans Due"
