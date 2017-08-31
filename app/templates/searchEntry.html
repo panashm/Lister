@@ -4,7 +4,7 @@
         <div class="row new entry">
             <div class="col-xs-11">
                 <h4 class="text-muted">Search Loans</h4><br/>
-                <form data-toggle="validator" action="" method="post" name="newSearch">
+                <form data-toggle="validator" action="" method="post" class="maxForm" name="newSearch">
 					{{ form.hidden_tag() }}
                   <div class="form-group">
                         {{form.category(class="form-control", id="category")}}
@@ -32,16 +32,22 @@
                                 <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></td>
                             {% elif r.days_remaining > 0 %}
                                 <td style="background-color:#ffb31c;width: 7px; padding:0;" rowspan="2"></td>
+                            {% elif (r.days_remaining == 0 and r.status == "On Loan") %}
+                                <td style="background-color:#F44336;width: 7px; padding:0;" rowspan="2"></td>
                             {% else %}
-                                <td style="background-color:#f44e42;width: 7px; padding:0;" rowspan="2"></td>
+                                <td style="background-color:#959ca8;width: 7px; padding:0;" rowspan="2"></td>
                             {% endif %}
-                            <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ r.id }}</span></td>
+                            <td class="tableIndex" style="width: 60px; padding:0;"><span class="label label-primary">#{{ r.id }}</span></td>
                             <td class="tableClient"><b>Client:</b> {{ r.first_name }} {{ r.last_name }}</td>
                             <th class="tableBin" style="width: 50px; padding:7px;" rowspan="2">
+                                {% if r.status == "On Loan" %}
                                 <form action="{{ url_for('delete_entry') }}" class="deleteForm" method="POST" class="deleteEntry">
                                     <input type=hidden value="{{ r.id }}"name="entry_to_delete">
                                     <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                                 </form>
+                                {% else %}
+                                <span class="glyphicon glyphicon-ok" style="color:#959ca8"></span>
+                                {% endif %}
                             </th>
                             
                         </tr>
@@ -49,7 +55,7 @@
                             <td class="tableTime"><span class="glyphicon glyphicon-time"></span> 
                                 {{ r.days_remaining }}
                             </td>
-                            <td class="tableItem"><b>Item:</b> {{r.item}} </td>
+                            <td class="tableItem"><b>Item:</b> <span style="margin-left: 0.6em;">{{r.quantity}}x {{r.item}} </span> </td>
                         </tr>
                     </table>
                 </div>

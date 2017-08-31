@@ -3,21 +3,60 @@
     <div class="container-fluid">
         <div class="row new entry">
             <div class="col-xs-11">
-                <form action="{{ url_for('main') }}" method="GET">
-                    <button type="submit" class="btn btn-default">ABOUT</button>
-                </form>
+                <h4 class="text-muted">About</h4>
             </div>
         </div>
         <br/>
-        <hr/>
-        <br/>
-        <div class="row entries">
-            <div class="col-xs-12">
-                <div class="table-responsive">
-                    
-                </div>
-            </div>
-        </div>
+        <p>
+        A simple, lightweight web app built to manage IT loans for clients, optimised for both mobile and desktop. 
+
+<br><br><b>Home</b> <br/><br> Add loans, mark loans as returned, click on loans to view further information.
+            <br><br><b>Search</b> <br/><br> Search past and present loans with given filters.
+            <br><br><b>Email</b> <br/><br> Email notifications are automatically sent to all techs for loans that are due, checked 10am daily.
+
+        </p>
     </div>
+
+    <script>  
+        $('.deleteForm').click(function(e) {
+            var currentForm = this;
+            e.preventDefault();
+            bootbox.confirm({ 
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    }
+                },
+                message: "Are you sure?", 
+                
+                callback: function(result){ 
+                    if (result == true) {
+                        currentForm.submit();
+                    }
+                }
+            })
+        });
+        
+        var textBlock = $('.OtherItem');
+        textBlock.hide();
+        
+        function change(obj) {
+            var textBlock = $('.OtherItem');
+            var selectBox = document.getElementById("item");
+            var selected = selectBox.value;
+            
+            if (selected == '3'){
+               textBlock.show();
+            }else{
+                textBlock.hide();
+            }
+        }
+    </script>
 
 {% endblock %}

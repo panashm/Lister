@@ -1,0 +1,10 @@
+<p>The following loans are due and need to be followed up:</p>
+<ul>
+    {% for entry in entries %}
+
+    <li>{{ entry.quantity }}x {{ entry.item }} by <b>{{ entry.first_name }} {{ entry.last_name }} </b> from {{ entry.getPrintableCreateDate() }}</li>
+    {% endfor %}
+</ul>
+<p>Visit <a href="http://list3r.herokuapp.com">Lister</a> to view more information.</p>
+<p>Regards,</p>
+<p>Lister</p>

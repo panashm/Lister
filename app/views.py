@@ -1,17 +1,22 @@
 from __future__ import print_function # In python 2.7
 from flask import render_template, flash, redirect, session, url_for, request, g
 from urlparse import urlparse, urljoin
-import smtplib
+import smtplib, re
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 import sys
 from datetime import date, datetime, time, timedelta
+import pytz
+from flask.ext.mail import Message
+from pytz import timezone
 import time
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
-from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt
-from .forms import searchForm, newEntryForm, item_choices, day_choices, search_choices, loginForm
+from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt, mail
+from .forms import searchForm, newEntryForm, item_choices, day_choices, search_choices, loginForm, registrationForm
 from .models import Entry, User, Log
+from itsdangerous import URLSafeTimedSerializer
+
 
 class MyView(BaseView):
     @expose('/')
@@ -19,12 +24,15 @@ class MyView(BaseView):
         
         return self.render('AdminIndex.html')
         
-admin.add_view(MyView(name='Hello'))
+admin.add_view(MyView(name='Welcome'))
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Entry, db.session))
-admin.add_view(ModelView(Log, db.session))
 
-currDate = time.strftime("%d/%m/%Y")
+sydney = timezone('Australia/Sydney')
+au_time = datetime.now(sydney)
+
+currDate = au_time.strftime("%d/%m/%Y %H:%M:%S")
+
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
 
 def lower(string):
@@ -33,18 +41,25 @@ def lower(string):
 def update_loans():
     entries = Entry.query.all()
     if entries:
-        d1 = datetime.strptime(currDate, '%d/%m/%Y')
+        au_time = datetime.now(sydney)
+        currDate = au_time.strftime("%d/%m/%Y %H:%M:%S")
+        d1 = datetime.strptime(currDate, '%d/%m/%Y %H:%M:%S')
+        d1 = d1.date()
         for entry in entries:
 
             if (entry.dueDate != None):
                 dueDate = (entry.dueDate)
-                dueDate = dueDate.strftime('%d/%m/%Y')
+                dueDate = dueDate.strftime('%d/%m/%Y %H:%M:%S')
+                
                 #currDate = time.strftime(dueDate, "%d/%m/%Y")
-                print (dueDate, file=sys.stderr)
-                d2 = datetime.strptime(dueDate, '%d/%m/%Y')
+                print (d1, dueDate, file=sys.stderr)
+                d2 = datetime.strptime(dueDate, '%d/%m/%Y %H:%M:%S')
+                d2 = d2.date()
+                
+                print(d1,d2)
                 daysRemaining = ((d2 - d1).days)
-                print ("yah yah yah yah yah",file=sys.stderr)
-                print(daysRemaining, file=sys.stderr)
+                print ("Testing",file=sys.stderr)
+                print(entry.days_remaining, daysRemaining, file=sys.stderr)
                 print(entry.first_name, file=sys.stderr)
 
                 if daysRemaining >= 0: 
@@ -54,9 +69,9 @@ def update_loans():
                     entry.days_remaining = int(daysRemaining)
 
                 #if entry.days_remaining == 0:
-                    #sendEmail(entry)
 
                 db.session.commit()
+    sendEmailEntry()
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -107,17 +122,22 @@ def main():
         print (g.user.id, file=sys.stderr)
     if request.method == 'POST':
         if request.form['btn'] == 'Submit':
+            au_time = datetime.now(sydney)
+
+            currDate = au_time.strftime("%d/%m/%Y %H:%M:%S")
             form = newEntryForm(request.form)
             #flash('Record was successfully added')
             print(form.firstName, file=sys.stderr)
             integer = int(form.item.data)
             item_display = item_choices[integer][1]
+            print("Hello there")
+            day_integer = int(form.duration.data) 
+            print("the day integer is:", day_integer)
+            day_display = day_integer #need to fix this
+            print("the day display is:", day_display)
 
-            day_integer = int(form.duration.data) + 1
-            day_display = int(day_choices[day_integer - 1][1]) #need to fix this
-            
-            currrDate = datetime.strptime(currDate, '%d/%m/%Y')
-            due_date = datetime.strptime(currDate, '%d/%m/%Y') + timedelta(days=day_integer)
+            currrDate = datetime.strptime(currDate, '%d/%m/%Y %H:%M:%S')
+            due_date = datetime.strptime(currDate, '%d/%m/%Y %H:%M:%S') + timedelta(days=day_integer)
 
             #if form.validate():
             print(day_display, file=sys.stderr)
@@ -125,11 +145,11 @@ def main():
             print("the date is:", day_integer, due_date, file=sys.stderr)
 
             if (item_display == "Other"):
-                entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, item = form.body.data, duration = day_display, dueDate = due_date, 
-                              days_remaining = day_display, create_date = currrDate, tech=g.user.username)
+                entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, quantity=form.quantity.data, item = form.body.data, asset = form.asset.data, duration = day_display, dueDate = due_date, 
+                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username)
             else:
-                entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, item = item_display, duration = day_display, dueDate = due_date, 
-                              days_remaining = day_display, create_date = currrDate, tech=g.user.username)
+                entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, quantity=form.quantity.data, item = item_display,asset = form.asset.data, duration = day_display, dueDate = due_date, 
+                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username)
 
             db.session.add(entry)
             db.session.commit()
@@ -147,37 +167,63 @@ def main():
     
         return render_template('index.html', user = g.user, form = newEntryForm(), entries = Entry.query.all())
 
-def sendEmail( entry ):
+def generate_confirmation_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(
+            token,
+            salt=app.config['SECURITY_PASSWORD_SALT'],
+            max_age=expiration
+        )
+    except:
+        return False
+    return email
+
+def sendEmailConfirm(to, subject, template):
+    msg = Message(
+        subject,
+        recipients=[to],
+        html=template,
+        sender=app.config['MAIL_DEFAULT_SENDER']
+        )
+    mail.send(msg)
     
-    fromaddr = "list3rapp@gmail.com"
-    toaddr = current_user.email
-    msg = MIMEMultipart()
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    msg['Subject'] = "Loan Due Notification"
-
-    body = "The loan for a " + entry.item + " by " + entry.first_name + " " + entry.last_name + " is now due, please follow this up."
-    msg.attach(MIMEText(body, 'plain'))
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr, "Pan34bel")
-    text = msg.as_string()
-    server.sendmail(fromaddr, toaddr, text)
-    server.quit()
-
-    print("email has been sent")
-    return
+def sendEmailEntry():
     
+    results = Entry.query.filter(Entry.days_remaining.contains(0)).all()
+    
+    if results:
+        subject = "Service Desk Loans Due"
+        
+        msg = Message(
+            subject,
+            recipients=["mashies34@gmail.com"],
+            html = render_template('loanDue.html', entries=results),
+            sender=app.config['MAIL_DEFAULT_SENDER']
+            )
+        mail.send(msg)
+
+        print("email has been sent")
+        flash("update email sent")
+    
+    print("theres no loans due")
+
+
 @app.route('/delete', methods=['POST'])
 def delete_entry():
     if request.method == 'POST':
         entry = Entry.query.get(request.form['entry_to_delete'])
+        entry.status = "Returned"
+        entry.days_remaining = 0
         print("we are printing", file=sys.stderr)
         print(entry.first_name, file=sys.stderr)
-        log = Log(first_name=entry.first_name, last_name=entry.last_name, item = entry.item, action = "Deleted", tech = entry.tech, date = datetime.strptime(currDate, '%d/%m/%Y')) 
-        db.session.add(log)
-        Entry.query.filter_by(id=request.form['entry_to_delete']).delete()
+        #log = Log(first_name=entry.first_name, last_name=entry.last_name, item = entry.item, action = "Deleted", tech = entry.tech, date = datetime.strptime(currDate, '%d/%m/%Y')) 
+        #db.session.add(log)
+        #Entry.query.filter_by(id=request.form['entry_to_delete']).delete()
         db.session.commit()
         
     return redirect(url_for('main'))
@@ -242,8 +288,8 @@ def login():
             user.set_password(user.password)
         
         if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                user.authenticated = True
+            if bcrypt.check_password_hash(user.password, form.password.data) and user.authenticated == True:
+                #user.authenticated = True
                 db.session.add(user)
                 db.session.commit()
                 login_user(user, remember=False)
@@ -252,7 +298,7 @@ def login():
                 # is_safe_url should check if the url is safe for redirects.
                 # See http://flask.pocoo.org/snippets/62/ for an example.
                 #if not is_safe_url(next):
-                print ("got hhsdgq43tqaesereeee")
+                print ("got ere")
 
                 return redirect(next or url_for('main'))
                # return redirect("/")
@@ -262,9 +308,79 @@ def login():
 
 @app.route("/history", methods=["GET"])
 def history():
+    return redirect(url_for('main'))
+    #return render_template("history.html", logs = Log.query.all())
+    
+@app.route("/about", methods=["GET"])
+def about():
+    return render_template("about.html")
 
-    return render_template("history.html", logs = Log.query.all())
+@app.route("/verifyMessage", methods=["GET"])
+def verifyMessage():
+    """Message asking them to check their emails"""
+    return render_template("checkEmail.html")
 
+@app.route("/confirmed", methods=["GET"])
+def confirmed():
+    """account confirmed"""
+    return render_template("activated.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = registrationForm()
+    """
+    user = User(
+        email=form.email.data,
+        password=form.password.data,
+        confirmed=False
+        )
+
+    """
+    
+    if request.method == "POST" and form.validate():
+            #must be knox email address
+            usernameF  = form.username.data
+            emailF = form.email.data
+            passwordF = form.password.data
+            passwordF = bcrypt.generate_password_hash(passwordF).decode('utf-8')
+            domain = re.search(r'@\w+(.*)', emailF).group()
+            print("the domain is:", domain)
+
+            #check if user exists
+            checkUsername = User.query.filter_by(username=usernameF)
+            checkEmail = User.query.filter_by(email=emailF)
+            if checkUsername.count() > 0 or checkEmail.count() > 0 or domain != "@knox.nsw.edu.au":
+                if checkUsername.count() > 0:
+                    flash("That username is already taken, please choose another")
+                    return render_template('signup.html', form=form, message="Username taken")
+                elif checkEmail.count() > 0:
+                    flash("That email is already taken, please choose another")
+                    return render_template('signup.html', form=form, message="Email taken")
+                else:
+                    flash("Use knox address")
+                    return render_template('signup.html', form=form, message="Please use Knox email")
+            else:
+                #enter user into database
+                user = User(username=usernameF, password = passwordF, email = emailF, authenticated = False, confirmed = False)
+                token = generate_confirmation_token(user.email)
+
+                flash("Thanks for registering!")
+                
+                confirm_url = url_for('confirm_email', token=token, _external=True)
+                html = render_template('activate.html', confirm_url=confirm_url)
+                subject = "Please confirm your email"
+                
+                sendEmailConfirm(emailF, subject, html)
+                
+                db.session.add(user)
+                db.session.commit()
+                return redirect(url_for('verifyMessage'))
+    else:
+        flash("didnt specify validation")
+        
+    return render_template("signup.html", form=form)
+ 
+    
 @app.route("/logout", methods=["GET"])
 def logout():
     """Logout the current user."""
@@ -275,3 +391,23 @@ def logout():
     #db.session.commit()
     logout_user()
     return redirect(url_for('main')) 
+
+
+@app.route("/confirm/<token>", methods=["GET"])
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        user.authenticated = True
+        user.confirmed_on = au_time 
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+        
+    return redirect(url_for('confirmed'))

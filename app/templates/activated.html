@@ -1,0 +1,11 @@
+{% extends "baseOther.html" %}
+{% block content %}
+    <body class="login">
+            <div class="col-xs-12 center">
+                <form class="form-signin" method="POST" action="" style="text-align: center;">
+                    <h3 class="form-signin-heading text-muted titleLister">Account Confirmed, please login</h3><br>
+                    <a href="{{ url_for('login') }}">Back to login </a>
+                </form>
+            </div>
+    </body>
+{% endblock %}

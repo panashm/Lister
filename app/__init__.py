@@ -6,7 +6,7 @@ from flask import (Flask, flash, render_template, request, redirect, url_for)
 from flask_sqlalchemy import SQLAlchemy
 import datetime, time
 from flask_login import LoginManager
-
+from flask.ext.mail import Mail
 import os
 from config import basedir
 from flask_bcrypt import Bcrypt
@@ -19,6 +19,7 @@ app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
 app.config.from_object('config')
 lm  = LoginManager()
+mail = Mail(app)
 
 lm.init_app(app)
 lm.login_view = 'login'

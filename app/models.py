@@ -13,11 +13,14 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(64), index=True, unique=False)
     last_name = db.Column(db.String(64), index=True, unique=False)
+    quantity = db.Column(db.Integer)
     item = db.Column(db.String(140))
+    asset = db.Column(db.String(140))
     duration = db.Column(db.Integer, index=True)
     dueDate = db.Column(db.DateTime)
     create_date = db.Column(db.DateTime)
     days_remaining = db.Column(db.Integer)
+    status = db.Column(db.String(140))
     tech = db.Column(db.String(64))
 
     def __repr__(self):
@@ -33,6 +36,9 @@ class Entry(db.Model):
     
     def getPrintableCreateDate(self):
         return self.create_date.strftime('%d/%m/%Y')
+    
+#class ItemChoices(db.model):
+    
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,6 +58,8 @@ class User(db.Model):
     password = db.Column('password', db.String(60), nullable=False)
     email = db.Column('email', db.String(50),unique=True , index=True)
     authenticated = db.Column('authenticated', db.Boolean)
+    confirmed = db.Column(db.Boolean, nullable=True, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
     
     def set_password(self, password):
         """Set password."""

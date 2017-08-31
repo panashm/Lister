@@ -5,23 +5,29 @@
             <div class="col-xs-11">
                 <h4 class="text-muted">New Loan</h4>
                 <hr style="height:10pt; visibility:hidden;" />
-                <form class="form-horizontal" id="newEntryForm" data-toggle="validator" action="" method="post" name="newEntry">
+                <form class="form-horizontal maxForm" id="newEntryForm" data-toggle="validator" action="" method="post" name="newEntry">
 					{{ form.hidden_tag() }}
                     <div class="form-group has-danger">
                         <div class="col-xs-12">
-						{{form.firstName(placeholder="First Name", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
+						{{form.firstName(placeholder="First Name", class="form-control form-control-danger ", id="inputDanger1", required="true", type="text", maxlength="25")}}
                         </div>
                   	</div>
                     <div class="form-group">
                         <div class="col-xs-12">
-						{{form.lastName(placeholder="Last Name", class="form-control", required="true")}}
+						{{form.lastName(placeholder="Last Name", type="text", maxlength="30", class="form-control", required="true")}}
                         </div>
                   </div>
-                  <div class="form-group">
-                      <div class="col-xs-12">
-                        {{form.item(class="form-control", id="item", onchange="change(this)")}}
-                      </div>
-                  </div>
+                  
+                    <div class="form-group">
+                    <div class="col-xs-12" id="parent">
+                            <div id="narrow" class="center-block">{{form.quantity(value=1, class="form-control",  required="true", type="number", min="1", max="99")}}
+</div>
+                            <div id="wide" class="">
+                            {{form.item(class="form-control", id="item", onchange="change(this)")}}
+                            </div>
+                            
+                        </div>
+                    </div>
                     <!--<div class="form-group">
                         <label for="example-datetime-local-input" class="example-text-imput">Return Date</label>
                              <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
@@ -29,16 +35,22 @@
                         </div>-->
                   <div class="form-group OtherItem">
                     <div class="col-xs-12">
-                        {{ form.body(placeholder="E.g. Apple Superdrive", class="form-control") }}
+                        {{ form.body(placeholder="E.g. Projector", class="form-control", type="text", maxlength="40") }}
+                    </div>
+                    </div>
+                    <div class="form-group AssetNo">
+                    <div class="col-xs-12">
+                        {{ form.asset(placeholder="Asset No.", class="form-control", type="text", maxlength="30") }}
                     </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-xs-7">
-                            <div style="" class="center-block">
-                            <div style="height: 50px;" class="pull-left">{{form.duration(class="form-control daysSelect", id="duration")}}</div>
+                        <div class="col-xs-12" id="parent">
+                            <div id="narrow" class="center-block">{{form.duration(value=1, class="form-control", required="true", type="number", min="1", max="99")}}
+</div>
+                            <div id="wide" class="">
+                            <p class="daysLabel">Day(s)</p>
                             </div>
                             
-                            <p class="daysLabel">Day(s)</p>
                         </div>
 
                   </div>
@@ -55,17 +67,20 @@
                 <h4 class="text-muted">Current Loans</h4>
                 <hr style="height:10pt; visibility:hidden;" />
                 {% for entry in entries %}
-                <div class="">
-                    <table border="0"  bgcolor="#00FF00" class='table table-borderless clickable-row' data-href="{{ url_for('view_entry', entry_id = entry.id) }}">
+                {% if entry.status == "On Loan" %}
+                <div class="tableRounded">
+                    <table border="0"  bgcolor="#00FF00" class='table-hover1 table table-borderless clickable-row' data-href="{{ url_for('view_entry', entry_id = entry.id) }}">
                         <tr>
                             {% if entry.days_remaining > 2 %}
                                 <td style="background-color:#00C853 ;width: 7px; padding:0;" rowspan="2"></td>
                             {% elif (entry.days_remaining > 0) %}
                                 <td style="background-color:#FF9800;width: 7px; padding:0;" rowspan="2"></td>
-                            {% else %}
+                            {% elif (entry.days_remaining == 0 and entry.status == "On Loan") %}
                                 <td style="background-color:#F44336;width: 7px; padding:0;" rowspan="2"></td>
+                            {% else %}
+                                <td style="background-color:#959ca8;width: 7px; padding:0;" rowspan="2"></td>
                             {% endif %}
-                            <td class="tableIndex" style="width: 55px; padding:0;"><span class="label label-primary">#{{ entry.id }}</span></td>
+                            <td class="tableIndex" style="width: 60px; padding:0;"><span class="label label-primary">#{{ entry.id }}</span></td>
                             <td class="tableClient"><b>Client:</b> {{ entry.first_name }} {{ entry.last_name }}</td>
                             <th class="tableBin notThis" style="width: 50px; padding:7px;" rowspan="2">
                                 <form action="{{ url_for('delete_entry') }}" class="deleteForm" id="delete" method="POST" class="deleteEntry">
@@ -83,10 +98,11 @@
                                     5
                                 {% endif %}
                             </td>
-                            <td class="tableItem"><b>Item:</b> <span style="margin-left: 0.6em;"> {{entry.item}} </span></td>
+                            <td class="tableItem"><b>Item:</b> <span style="margin-left: 0.6em;">{{entry.quantity}}x {{entry.item}} </span></td>
                         </tr>
                     </table>
                 </div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -101,15 +117,15 @@
                 size: "small",
                 buttons: {
                     confirm: {
-                        label: 'Delete',
-                        className: 'btn-danger'
+                        label: 'Yes',
+                        className: 'btn-primary'
                     },
                     cancel: {
                         label: 'Cancel',
                         className: 'btn-default'
                     }
                 },
-                message: "Are you sure?", 
+                message: "Mark this Loan as returned?", 
                 
                 callback: function(result){ 
                     if (result == true) {
@@ -128,16 +144,26 @@
         var textBlock = $('.OtherItem');
         textBlock.hide();
         
+        var textBlock2 = $('.AssetNo');
+        textBlock2.hide();
+        
         function change(obj) {
             var textBlock = $('.OtherItem');
             var selectBox = document.getElementById("item");
             var selected = selectBox.value;
             
-            if (selected == '3'){
+            if (selected == '4'){
                textBlock.show();
-            }else{
+                textBlock2.show();
+            }else if (selected == '1' | selected == '2'){ 
                 textBlock.hide();
+                textBlock2.show();
+            } else{
+                textBlock.hide();
+                textBlock2.hide();
             }
+            
+            
         }
         
         jQuery(document).ready(function($) {

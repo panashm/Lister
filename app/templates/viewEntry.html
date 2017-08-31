@@ -31,11 +31,15 @@
                             </tr>
                             <tr>
                               <th scope="row">Item:</th>
-                              <td>{{ entry.item }}</td>
+                              <td>{{entry.quantity}}x {{ entry.item }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Asset No:</th>
+                              <td>{{ entry.asset }}</td>
                             </tr>
                             <tr>
                               <th scope="row">Status:</th>
-                              <td>On Loan</td>
+                              <td>{{ entry.status }}</td>
                             </tr>
                             <tr>
                               <th scope="row">Date Created:</th>
@@ -51,10 +55,13 @@
                             </tr>
                             <tr>
                               <th></th>
+                                {% if entry.status == "On Loan" %}
+
                                 <td><form action="{{ url_for('delete_entry') }}" class="deleteForm" method="POST" class="deleteEntry">
                                     <input type=hidden value="{{ entry.id }}"name="entry_to_delete">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">Returned</button>
                                 </form>
+                                {% endif %}
                             </tr>
                         </tbody>
                     </table>
@@ -71,15 +78,15 @@
                 size: "small",
                 buttons: {
                     confirm: {
-                        label: 'Delete',
-                        className: 'btn-danger'
+                        label: 'Yes',
+                        className: 'btn-primary'
                     },
                     cancel: {
                         label: 'Cancel',
                         className: 'btn-default'
                     }
                 },
-                message: "Are you sure?", 
+                message: "Mark this Loan as returned?", 
                 
                 callback: function(result){ 
                     if (result == true) {
