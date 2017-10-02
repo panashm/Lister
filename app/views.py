@@ -40,11 +40,12 @@ currDate = au_time.strftime("%d/%m/%Y %H:%M:%S")
 
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
 
-#allEmails = adminEmails.query.all()
-#adminEmail = allEmails[0].adminEmail
-##notifEmail = allEmails[0].notifEmail
+allEmails = adminEmails.query.all()
+if allEmails:
+    adminEmail = allEmails[0].adminEmail
+    notifEmail = allEmails[0].notifEmail
 
-#print(adminEmail, notifEmail)
+    print(adminEmail, notifEmail)
 def lower(string):
     return string.lower()
 

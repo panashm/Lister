@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
-app.config.from_object('config')
+#app.config.from_object('config')
 lm  = LoginManager()
 mail = Mail(app)
 
