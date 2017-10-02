@@ -1,4 +1,3 @@
-
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,17 +10,17 @@ DEBUG_TB_ENABLED = False
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 
 # mail settings
-MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_SERVER = 'smtp.mailgun.org'
 MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 
 # gmail authentication
-MAIL_USERNAME = "list3rapp@gmail.com"
-MAIL_PASSWORD = "Pan34bel"
+MAIL_USERNAME = "email@list3r.me"
+MAIL_PASSWORD = "15454e01202cf2c50aee5e2342cc6e1f"
 
 # mail accounts
-MAIL_DEFAULT_SENDER = "list3rapp@gmail.com"
+MAIL_DEFAULT_SENDER = "email@list3r.me"
 
 if os.environ.get('DATABASE_URL') is None:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')

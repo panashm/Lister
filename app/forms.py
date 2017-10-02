@@ -9,7 +9,7 @@ from wtforms.validators import Length, Email
 from wtforms.widgets import TextArea
 
 item_choices = [ (0, 'VGA Adapter'),(1, 'Apple Superdrive'),(2, 'T430'), (3, 'Mac Charger'), (4, 'Other') ]
-search_choices = [ (0, 'Client'),(1, 'iD'),(2, 'Item'), (3, 'Tech'), (4, 'Days Remaining') ]
+search_choices = [ (0, 'Client'),(1, 'iD'),(2, 'Item'), (3, 'Asset'), (4, 'Tech'), (5, 'Days Remaining') ]
 
 day_choices = [ (0, '1'),(1, '2'),(2, '3'), (3, '4'), (4, '5'),(5, '6'), (6, '7') ]
 
@@ -23,9 +23,10 @@ class newEntryForm(Form):
                             [validators.Required()],
                             choices=item_choices)
     duration = IntegerField('Enter Quantity:', [validators.Required(), validators.NumberRange(min=0, max=9, message="please enter between 1 and 9")])
+    notes = TextField('Notes')
     
 class searchForm(Form):
-    searchField = TextField('Search Term:  ', validators=[Required()])
+    searchField = TextField('Search Term:  ')
     category = SelectField('Category:',
                             [validators.Required()],
                             choices=search_choices)

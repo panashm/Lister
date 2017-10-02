@@ -21,7 +21,7 @@
                     <div class="form-group">
                     <div class="col-xs-12" id="parent">
                             <div id="narrow" class="center-block">{{form.quantity(value=1, class="form-control",  required="true", type="number", min="1", max="99")}}
-</div>
+                            </div>
                             <div id="wide" class="">
                             {{form.item(class="form-control", id="item", onchange="change(this)")}}
                             </div>
@@ -43,10 +43,15 @@
                         {{ form.asset(placeholder="Asset No.", class="form-control", type="text", maxlength="30") }}
                     </div>
                     </div>
+                    <div class="form-group Notes">
+                    <div class="col-xs-12">
+                        {{ form.notes(placeholder="Notes", class="form-control", type="text", maxlength="100") }}
+                    </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-xs-12" id="parent">
                             <div id="narrow" class="center-block">{{form.duration(value=1, class="form-control", required="true", type="number", min="1", max="99")}}
-</div>
+                            </div>
                             <div id="wide" class="">
                             <p class="daysLabel">Day(s)</p>
                             </div>

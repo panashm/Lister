@@ -19,9 +19,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 from app import app, db, lm, admin, BaseView, expose, ModelView, bcrypt, mail, SQLAlchemy
 from .forms import searchForm, newEntryForm, item_choices, day_choices, search_choices, loginForm, registrationForm
-from .models import Entry, User, Log
+from .models import Entry, User, Log, adminEmails
 from itsdangerous import URLSafeTimedSerializer
-
 
 class MyView(BaseView):
     @expose('/')
@@ -32,6 +31,7 @@ class MyView(BaseView):
 admin.add_view(MyView(name='Welcome'))
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Entry, db.session))
+admin.add_view(ModelView(adminEmails, db.session))
 
 sydney = timezone('Australia/Sydney')
 au_time = datetime.now(sydney)
@@ -40,6 +40,11 @@ currDate = au_time.strftime("%d/%m/%Y %H:%M:%S")
 
 #print ("dd/mm/yyyy format =  %s/%s/%s" % (dueDate.day, dueDate.month, dueDate.year), file=sys.stderr )
 
+allEmails = adminEmails.query.all()
+adminEmail = allEmails[0].adminEmail
+notifEmail = allEmails[0].notifEmail
+
+print(adminEmail, notifEmail)
 def lower(string):
     return string.lower()
 
@@ -151,10 +156,10 @@ def main():
 
             if (item_display == "Other"):
                 entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, quantity=form.quantity.data, item = form.body.data, asset = form.asset.data, duration = day_display, dueDate = due_date, 
-                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username)
+                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username,notes = form.notes.data)
             else:
                 entry = Entry(first_name=form.firstName.data, last_name=form.lastName.data, quantity=form.quantity.data, item = item_display,asset = form.asset.data, duration = day_display, dueDate = due_date, 
-                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username)
+                              days_remaining = day_display, create_date = currrDate, status="On Loan", tech=g.user.username, notes = form.notes.data)
 
             db.session.add(entry)
             db.session.commit()
@@ -193,36 +198,40 @@ def sendEmailConfirm(to, subject, template):
         subject,
         recipients=[to],
         html=template,
-        sender=app.config['MAIL_DEFAULT_SENDER']
+        sender=("List3r", app.config['MAIL_DEFAULT_SENDER'])
         )
     mail.send(msg)
     
 def sendEmailEntry():
     
-    results = Entry.query.filter(cast(Entry.days_remaining, sqlalchemy.String).ilike("%"+ "0" +"%")).all()
-    
+    results = Entry.query.filter(cast(Entry.days_remaining, sqlalchemy.String).ilike("%"+ "0" +"%"), Entry.status.ilike("%"+ "On Loan" +"%")).all()
     if results:
         subject = "Service Desk Loans Due"
         
         msg = Message(
             subject,
-            recipients=["mashies34@gmail.com"],
+            recipients=[notifEmail],
             html = render_template('loanDue.html', entries=results),
-            sender=app.config['MAIL_DEFAULT_SENDER']
+            sender=("List3r", app.config['MAIL_DEFAULT_SENDER'])
             )
         mail.send(msg)
 
         print("email has been sent")
         flash("update email sent")
-    
-    print("theres no loans due")
+    else:     
+        print("theres no loans due")
 
 
 @app.route('/delete', methods=['POST'])
 def delete_entry():
+    g.user = user_loader(current_user.id)
+
     if request.method == 'POST':
         entry = Entry.query.get(request.form['entry_to_delete'])
         entry.status = "Returned"
+        date = datetime.strptime(currDate, '%d/%m/%Y %H:%M:%S')
+        date = date.strftime('%d/%m/%Y')
+        entry.date_returned = str(date) + ", " + str(g.user.username)
         entry.days_remaining = 0
         print("we are printing", file=sys.stderr)
         print(entry.first_name, file=sys.stderr)
@@ -260,6 +269,8 @@ def search_entry():
             results = Entry.query.filter((Entry.first_name.ilike("%"+ form1.searchField.data +"%")) | (Entry.last_name.ilike("%"+ form1.searchField.data +"%")) ).all()
         elif search_cat == "Item":
             results = Entry.query.filter(Entry.item.ilike("%"+ form1.searchField.data +"%")).all()
+        elif search_cat == "Asset":
+            results = Entry.query.filter(Entry.asset.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Tech":
             results = Entry.query.filter(Entry.tech.ilike("%"+ form1.searchField.data +"%")).all()
         elif search_cat == "Days Remaining":
@@ -330,6 +341,9 @@ def confirmed():
     """account confirmed"""
     return render_template("activated.html")
 
+def hasNumbers(inputString):
+    return any(char.isdigit() for char in inputString)
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = registrationForm()
@@ -354,7 +368,7 @@ def register():
             #check if user exists
             checkUsername = User.query.filter_by(username=usernameF)
             checkEmail = User.query.filter_by(email=emailF)
-            if checkUsername.count() > 0 or checkEmail.count() > 0 or domain != "@knox.nsw.edu.au":
+            if checkUsername.count() > 0 or checkEmail.count() > 0 or hasNumbers(emailF) or domain != "@knox.nsw.edu.au":
                 if checkUsername.count() > 0:
                     flash("That username is already taken, please choose another")
                     return render_template('signup.html', form=form, message="Username taken")
@@ -362,7 +376,7 @@ def register():
                     flash("That email is already taken, please choose another")
                     return render_template('signup.html', form=form, message="Email taken")
                 else:
-                    flash("Use knox address")
+                    flash("Use knox email address")
                     return render_template('signup.html', form=form, message="Please use Knox email")
             else:
                 #enter user into database

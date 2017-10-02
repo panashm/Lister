@@ -25,7 +25,7 @@ lm.init_app(app)
 lm.login_view = 'login'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-admin = Admin(app)
+admin = Admin(app,  url='/admins1')
 BaseView = BaseView
 expose = expose
 ModelView = ModelView

@@ -10,7 +10,7 @@
                         {{form.category(class="form-control", id="category")}}
                     </div>
                     <div class="form-group has-danger">
-						{{form.searchField(placeholder="Search Term", class="form-control form-control-danger ", id="inputDanger1", required="true")}}
+						{{form.searchField(placeholder="Search Term", class="form-control form-control-danger ", id="inputDanger1")}}
                   	</div>
     
                   <button type="submit" name="btn" value="Submit" class="btn btn-primary">Search</button>
@@ -22,11 +22,12 @@
         <hr/>
         <br/>
         <h4 class="text-muted">Results</h4>
+        <br/>
         <div class="row entries">
             <div class="col-xs-12">
                 {% for r in results %}
                 <div class="">
-                    <table border="0" bgcolor="#00FF00" class='clickable-row table-borderless table' data-href="{{ url_for('view_entry', entry_id = r.id, page=request.endpoint) }}">
+                    <table border="0" bgcolor="#00FF00" class='table-hover1 table table-borderless clickable-row' data-href="{{ url_for('view_entry', entry_id = r.id, page=request.endpoint) }}">
                         <tr>
                             {% if r.days_remaining > 2 %}
                                 <td style="background-color:#00cc00;width: 7px; padding:0;" rowspan="2"></td>

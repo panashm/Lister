@@ -20,8 +20,10 @@ class Entry(db.Model):
     dueDate = db.Column(db.DateTime)
     create_date = db.Column(db.DateTime)
     days_remaining = db.Column(db.Integer)
+    date_returned = db.Column(db.String(140))
     status = db.Column(db.String(140))
     tech = db.Column(db.String(64))
+    notes = db.Column(db.String(160))
 
     def __repr__(self):
         return '<Entry %r>' % (self.first_name)
@@ -52,6 +54,11 @@ class Log(db.Model):
     def getPrintableDueDate(self):
         return self.date.strftime('%d/%m/%y')
 
+class adminEmails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    adminEmail = db.Column('adminemail', db.String(50),unique=True , index=True)
+    notifEmail = db.Column('noteemail', db.String(50),unique=True , index=True)
+    
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)
