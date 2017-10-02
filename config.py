@@ -22,10 +22,10 @@ MAIL_PASSWORD = "15454e01202cf2c50aee5e2342cc6e1f"
 # mail accounts
 MAIL_DEFAULT_SENDER = "email@list3r.me"
 
-if os.environ.get('DATABASE_URL') is None:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-else:
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+#if os.environ.get('DATABASE_URL') is None:
+#    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+#else:
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
