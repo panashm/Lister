@@ -295,7 +295,7 @@ def login():
 
     form = loginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data.lower()).first()
         
         print("Username is:")
         print(user.username)
@@ -360,6 +360,7 @@ def register():
     if request.method == "POST" and form.validate():
             #must be knox email address
             usernameF  = form.username.data
+            usernameF = usernameF.lower()
             emailF = form.email.data
             passwordF = form.password.data
             passwordF = bcrypt.generate_password_hash(passwordF).decode('utf-8')
